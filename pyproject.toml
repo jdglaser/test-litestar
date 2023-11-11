@@ -1,0 +1,31 @@
+# mypy - type checking
+[tool.mypy]
+disallow_untyped_defs = true
+mypy_path = "$MYPY_CONFIG_FILE_DIR/app"
+
+# black - auto formatting
+[tool.black]
+line-length = 120
+
+# flake8 - linting
+[tool.flake8]
+max-line-length = 120
+extend-ignore = "E203" # https://black.readthedocs.io/en/stable/guides/using_black_with_other_tools.html#flake8
+
+# bandit - code security
+[tool.bandit]
+exclude_dirs = ["tests", "main.py", "__init__.py"]
+
+# pytest
+[tool.pytest.ini_options]
+pythonpath = [
+    ".", "src",
+]
+
+# pytest-cov
+[tool.coverage.run]
+omit = [
+    "tests/*",
+    "*/main.py",
+    "*/__init__.py"
+]
