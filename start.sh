@@ -1,1 +1,1 @@
-litestar run --wc 4
+litestar run --reload --reload-dir "./app" --debug
