@@ -77,7 +77,7 @@ class AuthRepo:
     async def deactivate_token(self, token_id: int) -> Token:
         sql = """
         UPDATE tokens
-        SET active = 0
+        SET active = 0,
         deactivated_at = CURRENT_TIMESTAMP
         WHERE token_id = :token_id
         RETURNING *

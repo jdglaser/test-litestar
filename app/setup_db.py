@@ -28,7 +28,7 @@ CREATE TABLE todos (
     title TEXT NOT NULL,
     description TEXT NOT NULL,
     due_date TEXT,
-    complete INTEGER NOT NULL,
+    complete INTEGER NOT NULL DEFAULT 0,
     created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users (user_id)
 );

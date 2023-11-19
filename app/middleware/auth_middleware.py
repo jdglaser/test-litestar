@@ -1,22 +1,11 @@
 from datetime import datetime
 
 from litestar import Request
-from litestar.datastructures import State
 from litestar.exceptions import NotAuthorizedException
 from litestar.types import ASGIApp, Receive, Scope, Send
 
-from app.api.auth.models import AuthUser
 from app.api.auth.repo import AuthRepo
-from app.common import deps
 from app.common.app_state import AppState
-
-
-@deps.dep
-async def auth_user(state: State) -> AuthUser:
-    auth_user = getattr(state, "auth_user", None)
-    if not auth_user:
-        raise NotAuthorizedException("No auth_user in State")
-    return auth_user
 
 
 def auth_middleware_factory(app: ASGIApp) -> ASGIApp:
@@ -40,7 +29,7 @@ def auth_middleware_factory(app: ASGIApp) -> ASGIApp:
                 await auth_repo.deactivate_token(found_token.token_id)
                 raise NotAuthorizedException("Token expired")
             user = await auth_repo.get_auth_user_from_token(found_token)
-            litestar_app.state.auth_user = user
+            litestar_app.state.app_state.auth_user = user
         await app(scope, receive, send)
 
     return my_middleware

@@ -13,23 +13,22 @@ class TodoRepo:
     def __init__(self, db: AsyncEngine) -> None:
         self.db = db
 
-    async def get_todos(self, get_todos_request: GetTodosRequest, user: AuthUser) -> list[Todo]:
+    async def get_todos(self, get_todos_request: GetTodosRequest, auth_user: AuthUser) -> list[Todo]:
         sql = """
         SELECT * FROM todos
         WHERE user_id = :user_id
         """
 
-        params = {}
+        params = {"user_id": auth_user.user_id}
         if get_todos_request.complete is not None:
             sql += " AND complete = :complete"
             params["complete"] = get_todos_request.complete
 
         async with self.db.connect() as conn:
-            async with conn.begin():
-                rows = await conn.execute(text(sql), params)
-                return [msgspec.convert(camelize_row_mapping(r), Todo) for r in rows.mappings().fetchall()]
+            rows = await conn.execute(text(sql), params)
+            return [msgspec.convert(camelize_row_mapping(r), Todo, strict=False) for r in rows.mappings().fetchall()]
 
-    async def create_todo(self, create_todo_request: CreateTodoRequest, user: AuthUser) -> Todo:
+    async def create_todo(self, create_todo_request: CreateTodoRequest, auth_user: AuthUser) -> Todo:
         sql = """
         INSERT INTO todos (user_id, title, description, due_date)
         VALUES (:user_id, :title, :description, :due_date)
@@ -38,6 +37,6 @@ class TodoRepo:
         async with self.db.connect() as conn:
             async with conn.begin():
                 rows = await conn.execute(
-                    text(sql), msgspec.structs.asdict(create_todo_request) | {"user_id": user.user_id}
+                    text(sql), msgspec.structs.asdict(create_todo_request) | {"user_id": auth_user.user_id}
                 )
-                return msgspec.convert(camelize_row_mapping(rows.mappings().one()), Todo)
+                return msgspec.convert(camelize_row_mapping(rows.mappings().one()), Todo, strict=False)

@@ -14,11 +14,11 @@ class TodoController(Controller):
     async def get_todos(
         self,
         todo_repo: TodoRepo,
-        user: AuthUser,
+        auth_user: AuthUser,
         complete: Optional[bool] = None,
     ) -> list[Todo]:
-        return await todo_repo.get_todos(GetTodosRequest(complete), user)
+        return await todo_repo.get_todos(GetTodosRequest(complete), auth_user)
 
     @post("/")
-    async def create_todo(self, data: CreateTodoRequest, todo_repo: TodoRepo, user: AuthUser) -> Todo:
-        return await todo_repo.create_todo(data, user)
+    async def create_todo(self, data: CreateTodoRequest, todo_repo: TodoRepo, auth_user: AuthUser) -> Todo:
+        return await todo_repo.create_todo(data, auth_user)

@@ -7,7 +7,7 @@ from app.common.base_model import Base
 class CreateTodoRequest(Base):
     title: str
     description: str
-    due_date: Optional[datetime]
+    due_date: Optional[datetime] = None
 
 
 class GetTodosRequest(Base):
