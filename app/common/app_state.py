@@ -2,11 +2,11 @@ import msgspec
 from argon2 import PasswordHasher
 from sqlalchemy.ext.asyncio import AsyncEngine
 
-
-class Base(msgspec.Struct, rename="camel", frozen=True):
-    ...
+from app.api.auth.repo import AuthRepo
 
 
 class AppState(msgspec.Struct):
     db: AsyncEngine
     password_hasher: PasswordHasher
+    # We need a version of the auth service in state to access it from auth middleware
+    auth_repo: AuthRepo

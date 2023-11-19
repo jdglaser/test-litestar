@@ -6,19 +6,31 @@ from sqlalchemy.ext.asyncio import AsyncEngine
 SQL = """
 CREATE TABLE users (
     user_id INTEGER PRIMARY KEY,
-    email TEXT UNIQUE,
-    hashed_password: TEXT,
-    created_at TEXT DEFAULT CURRENT_TIMESTAMP
+    email TEXT NOT NULL UNIQUE,
+    hashed_password TEXT NOT NULL,
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE tokens (
     token_id INTEGER PRIMARY KEY,
-    value TEXT UNIQUE,
-    user_id INTEGER,
-    active INTEGER DEFAULT 1,
-    expires_at TEXT,
-    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-    deactivated_at TEXT DEFAULT CURRENT_TIMESTAMP
+    value TEXT NOT NULL UNIQUE,
+    user_id INTEGER NOT NULL,
+    active INTEGER NOT NULL DEFAULT 1,
+    expires_at TEXT NOT NULL,
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    deactivated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users (user_id)
+);
+
+CREATE TABLE todos (
+    todo_id INTEGER PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    title TEXT NOT NULL,
+    description TEXT NOT NULL,
+    due_date TEXT,
+    complete INTEGER NOT NULL,
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users (user_id)
 );
 """
 

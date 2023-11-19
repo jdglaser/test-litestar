@@ -3,10 +3,8 @@ from litestar.status_codes import HTTP_201_CREATED
 
 from app.api.auth.models import LoginUserRequest, LoginUserResponse, RegisterUserRequest
 from app.api.auth.service import AuthService
-from app.common import deps
 
 
-@deps.dep
 class AuthController(Controller):
     path = "/auth"
 

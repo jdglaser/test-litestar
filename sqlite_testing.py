@@ -2,10 +2,12 @@ import os
 from datetime import UTC, datetime
 
 import msgspec
-from sqlalchemy import create_engine, event, text
+from sqlalchemy import RowMapping, create_engine, event, text
 from sqlalchemy.engine.interfaces import DBAPIConnection
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.pool import ConnectionPoolEntry
+
+from app.common.utils import from_mapping
 
 os.remove("data.db")
 engine = create_engine("sqlite+pysqlite:///data.db")
@@ -83,7 +85,7 @@ with engine.connect() as conn:
         .mappings()
         .one()
     )
-    inserted_user = msgspec.convert(insert_rows, User)
+    inserted_user = from_mapping(insert_rows, User)
     print("INSERTED USER:", inserted_user)
 
     rows = conn.execute(text("SELECT * FROM users")).fetchall()
@@ -96,7 +98,7 @@ with engine.connect() as conn:
         .mappings()
         .one()
     )
-    updated_user = msgspec.convert(update_rows, User)
+    updated_user = from_mapping(update_rows, User)
     print("UPDATED USER:", updated_user)
 
     rows = conn.execute(text("SELECT * FROM users")).fetchall()

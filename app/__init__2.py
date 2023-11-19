@@ -12,7 +12,7 @@ from litestar.datastructures import State
 from litestar.di import Provide
 from litestar.logging import LoggingConfig
 from litestar.plugins import InitPluginProtocol
-from litestar.types import Scope
+from litestar.types import ASGIApp, Receive, Scope, Send
 
 T = TypeVar("T", bound=Callable)
 
@@ -91,6 +91,18 @@ def startup(app: Litestar) -> None:
     app.state.my_dep = "my dep from startup!"
 
 
+def test_mw(app: ASGIApp) -> ASGIApp:
+    async def my_middleware(scope: Scope, receive: Receive, send: Send) -> None:
+        # Initialize auth flow - in a real app we would want to use less detailed error messages
+        # for security, but I'm being overly verbose here for testing
+        litestar_app = scope[]
+        my_dep = litestar_app.dependencies.get("my_dep")
+        print("my_dep in MW: ", await my_dep())
+        await app(scope, receive, send)
+
+    return my_middleware
+
+
 log_config = LoggingConfig(
     root={"level": logging.getLevelName(logging.DEBUG), "handlers": ["console"]},
 )
@@ -102,4 +114,5 @@ app = Litestar(
     logging_config=log_config,
     on_startup=[startup],
     plugins=[dependency],
+    middleware=[test_mw],
 )

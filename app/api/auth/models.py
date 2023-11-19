@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 
-from app.common.models import Base
+from app.common.base_model import Base
 
 
 class User(Base):
@@ -12,6 +12,7 @@ class User(Base):
 
 
 class AuthUser(Base):
+    user_id: int
     email: str
     created_at: datetime
 
