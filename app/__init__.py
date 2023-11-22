@@ -74,7 +74,6 @@ async def shutdown(app: Litestar) -> None:
 protected_routes = Router("/", route_handlers=[TodoController], middleware=[auth_middleware_factory])
 api_router = Router("/api", route_handlers=[AuthController, protected_routes])
 
-print(deps.dep.provide())
 app = Litestar(
     route_handlers=[api_router],
     static_files_config=[StaticFilesConfig(path="/", directories=["app/static"], html_mode=True)],
