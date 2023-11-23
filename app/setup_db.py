@@ -4,14 +4,14 @@ from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine
 
 SQL = """
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     user_id INTEGER PRIMARY KEY,
     email TEXT NOT NULL UNIQUE,
     hashed_password TEXT NOT NULL,
     created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE tokens (
+CREATE TABLE IF NOT EXISTS tokens (
     token_id INTEGER PRIMARY KEY,
     value TEXT NOT NULL UNIQUE,
     user_id INTEGER NOT NULL,
@@ -22,7 +22,7 @@ CREATE TABLE tokens (
     FOREIGN KEY (user_id) REFERENCES users (user_id)
 );
 
-CREATE TABLE todos (
+CREATE TABLE IF NOT EXISTS todos (
     todo_id INTEGER PRIMARY KEY,
     user_id INTEGER NOT NULL,
     title TEXT NOT NULL,

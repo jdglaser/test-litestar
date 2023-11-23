@@ -41,8 +41,9 @@ async def provide_auth_user(state: State) -> AuthUser:
 
 
 log_config = LoggingConfig(
-    root={"level": logging.getLevelName(logging.DEBUG), "handlers": ["console"]},
+    root={"level": logging.getLevelName(logging.INFO), "handlers": ["console"]},
 )
+logging.Filter
 
 
 async def log_exception(exception: Exception, scope: Scope) -> None:
@@ -51,7 +52,7 @@ async def log_exception(exception: Exception, scope: Scope) -> None:
 
 
 async def startup(app: Litestar) -> None:
-    db_engine = create_async_engine("sqlite+aiosqlite:///:memory:")
+    db_engine = create_async_engine("sqlite+aiosqlite:///data.db")
 
     @event.listens_for(db_engine.sync_engine, "connect")
     def _on_connect(dbapi_connection: DBAPIConnection, connection_record: ConnectionPoolEntry) -> None:

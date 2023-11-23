@@ -17,6 +17,9 @@ from app.api.auth.models import (
 )
 from app.api.auth.repo import AuthRepo
 from app.common import deps
+from app.common.get_log import get_logger
+
+_logger = get_logger(__name__)
 
 
 @deps.dep
@@ -41,8 +44,7 @@ class AuthService:
         except Exception:
             raise NotAuthorizedException("Incorrect email or password")
         if self.password_hasher.check_needs_rehash(stored_user.hashed_password):
-            # TODO: Configure logging
-            print("User password needs rehashing")
+            _logger.info("User password needs rehashing")
             new_hashed_password = self.password_hasher.hash(login_user_request.password)
             await self.auth_repo.update_user(stored_user.user_id, UpdateUser(stored_user.email, new_hashed_password))
 

@@ -9,7 +9,10 @@ from sqlalchemy.ext.asyncio import AsyncEngine
 from app.api.auth.exceptions import UserAlreadyExistsException
 from app.api.auth.models import AuthUser, InsertToken, InsertUser, Token, UpdateUser, User
 from app.common import deps
+from app.common.get_log import get_logger
 from app.common.utils import camelize_row_mapping
+
+_logger = get_logger(__name__)
 
 
 @deps.dep
@@ -42,7 +45,7 @@ class AuthRepo:
                     created_user = rows.mappings().one()
                     return msgspec.convert(camelize_row_mapping(created_user), User)
                 except IntegrityError as ex:
-                    print(ex)  # TODO: setup logging
+                    _logger.exception(ex)
                     raise UserAlreadyExistsException("User with the provided email already exists")
 
     async def update_user(self, user_id: int, update_user: UpdateUser) -> User:
@@ -89,7 +92,7 @@ class AuthRepo:
 
     async def find_token_by_value(self, value: str) -> Optional[Token]:
         sql = """
-        SELECT *
+        SELECT *,
         FROM tokens
         WHERE active = 1
         AND value = :value
