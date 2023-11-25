@@ -1,10 +1,7 @@
-import logging
-
 from argon2 import PasswordHasher
 from litestar import Litestar, Request, Router
 from litestar.datastructures import State
 from litestar.exceptions import NotAuthorizedException
-from litestar.logging import LoggingConfig
 from litestar.static_files import StaticFilesConfig
 from litestar.types import Scope
 from sqlalchemy import event
@@ -18,6 +15,7 @@ from app.api.auth.repo import AuthRepo
 from app.api.todos.controller import TodoController
 from app.common import deps
 from app.common.app_state import AppState
+from app.common.get_log import get_logger, log_config
 from app.middleware.auth_middleware import auth_middleware_factory
 from app.setup_db import setup_db
 
@@ -40,10 +38,7 @@ async def provide_auth_user(state: State) -> AuthUser:
     return app_state.auth_user
 
 
-log_config = LoggingConfig(
-    root={"level": logging.getLevelName(logging.INFO), "handlers": ["console"]},
-)
-logging.Filter
+_log = get_logger()
 
 
 async def log_exception(exception: Exception, scope: Scope) -> None:
@@ -52,6 +47,7 @@ async def log_exception(exception: Exception, scope: Scope) -> None:
 
 
 async def startup(app: Litestar) -> None:
+    _log.info("Starting app")
     db_engine = create_async_engine("sqlite+aiosqlite:///data.db")
 
     @event.listens_for(db_engine.sync_engine, "connect")

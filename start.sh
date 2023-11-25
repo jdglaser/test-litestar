@@ -1,1 +1,0 @@
-litestar run --reload --reload-dir "./app" --debug

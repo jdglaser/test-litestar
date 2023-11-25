@@ -4,6 +4,10 @@ disallow_untyped_defs = true
 disable_error_code = "misc"
 mypy_path = "$MYPY_CONFIG_FILE_DIR/app"
 
+[[tool.mypy.overrides]]
+module = ["setuptools"]
+ignore_missing_imports = true
+
 # black - auto formatting
 [tool.black]
 line-length = 120
@@ -13,20 +17,3 @@ line-length = 120
 max-line-length = 120
 extend-ignore = "E203" # https://black.readthedocs.io/en/stable/guides/using_black_with_other_tools.html#flake8
 
-# bandit - code security
-[tool.bandit]
-exclude_dirs = ["tests", "main.py", "__init__.py"]
-
-# pytest
-[tool.pytest.ini_options]
-pythonpath = [
-    ".", "src",
-]
-
-# pytest-cov
-[tool.coverage.run]
-omit = [
-    "tests/*",
-    "*/main.py",
-    "*/__init__.py"
-]

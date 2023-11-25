@@ -12,7 +12,7 @@ from app.common import deps
 from app.common.get_log import get_logger
 from app.common.utils import camelize_row_mapping
 
-_logger = get_logger(__name__)
+_logger = get_logger()
 
 
 @deps.dep
@@ -45,7 +45,7 @@ class AuthRepo:
                     created_user = rows.mappings().one()
                     return msgspec.convert(camelize_row_mapping(created_user), User)
                 except IntegrityError as ex:
-                    _logger.exception(ex)
+                    _logger.exception(str(ex))
                     raise UserAlreadyExistsException("User with the provided email already exists")
 
     async def update_user(self, user_id: int, update_user: UpdateUser) -> User:

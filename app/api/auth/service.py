@@ -19,7 +19,7 @@ from app.api.auth.repo import AuthRepo
 from app.common import deps
 from app.common.get_log import get_logger
 
-_logger = get_logger(__name__)
+_logger = get_logger()
 
 
 @deps.dep
